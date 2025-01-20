@@ -12,7 +12,7 @@ Response:(JSON)
 ```json
 {
     "title": "title of content",
-    "List of content":['Content1','Content2','Content3'...'ContentN']
+    "List of content":["Content1","Content2","Content3","...""ContentN"]
 }
 ```
 
