@@ -1,21 +1,18 @@
 #Web Scrapper API documentation
 ----------------------------------
-This API retiving a text data from wikipedia or similar structure website
+This API retrieving a text data from web-page 
 -------------------------------------------------------------------------
-##1-Get text data from website
+##1-Get metadata for a webpage
 
-Endpoint: GET/text_content
+Endpoint: "GET /metadata"
 
-Parameter:URL(wikipedia)
+Parameter:URL(url of webpage)
 
 Response:(JSON)
+```json
 {
-    {'Title':title1 },
-    {'List of content':Content1,content2,content3,...contentn},
-    {'Content1':Text of content1},
-    {'content2':Text of content2},
-    .
-    .
-    .
-    {'Content n':Text of Content n }
+    "title": "title of content",
+    "List of content":['Content1','Content2','Content3'...'ContentN']
 }
+```
+
