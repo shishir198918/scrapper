@@ -10,8 +10,8 @@ Parameter:URL(url of webpage)
 
 Response:(JSON)
 ```json
-metadata{
-    {
+{
+"metadata"    {
     "title": "title of Webpage",
     "List of content":["Content1","Content2","Content3","...""ContentN"]
     }
@@ -26,8 +26,8 @@ Parameter:URL(url of webpage)
 
 Response:(JSON)
 ```json
-content{
-    {
+{
+ "content"   {
  "title":"title of Webpage",
  "Content 1":"Text in content",
  "Content 2":"Text in content 2"
