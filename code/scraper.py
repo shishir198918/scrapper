@@ -13,7 +13,7 @@ def connection(url):
     html=html_bytes.decode("utf-8")
     return html
 
-content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i"])
+content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i","th","td"])
 title_tags_only=SoupStrainer(["h1","h2","h3"]) # only parse title tags 
 title_soup=BS4(connection(url),"html.parser",parse_only=title_tags_only)
 soup=BS4(connection(url3),"html.parser",parse_only=content_tags_only)

@@ -20,6 +20,7 @@ def metadata():
     res={}
     res['metadata']=meta
     return make_response(jsonify(res),200)
+
 @app.route("/content/",methods=["GET"])
 def content():
     url=urllib.parse.unquote(request.args.get("url"))
