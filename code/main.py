@@ -5,9 +5,9 @@ from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 title_tags_only=SoupStrainer(["h1","h2","h3"])
 
-api=Flask(__name__)
+app=Flask(__name__)
 
-@api.route("/metadata/", methods=["GET"])
+@app.route("/metadata/", methods=["GET"])
 def metadata():
     url=urllib.parse.unquote(request.args.get("url"))
     title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
@@ -20,6 +20,6 @@ def metadata():
     return make_response(jsonify(res),200)
 
 if __name__ =="__main__":
-    api.run()
+    app.run()
 
 
