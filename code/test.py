@@ -16,7 +16,7 @@ def obj_beautifulSoup(stringify_html):
 
 def response(obj_BS4):
     metadata={}
-    metadata["title"]=str(obj_BS4.title.string) 
+    metadata["title"]=str(obj_BS4.h1.string) 
     print(type(metadata['title']))
 
     res={}

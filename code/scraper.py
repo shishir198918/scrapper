@@ -1,4 +1,5 @@
 from urllib.request import urlopen
+
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 url="https://en.wikipedia.org/wiki/Prakash_Shukla"
@@ -39,21 +40,33 @@ def list_of_content(title_soup):
     return content 
 
 
+  
+
+
+
 def text_content(soup):
-    content={}
+    content = {}
+    headings = soup.find_all(["h1","h2","h3"])
     
-    for title in soup.h1.next_sibilings:
-        content[title.text]=""
-        if title.name  in ["h1","h2","h3"]:
-            break
-        if title.name=="img":
-            content[title.text]=content[title.text]+title["src"]+title.text
-        if title.name in ["p","ul","ol","a"]:
-            content[title.text]=content[title.text]+title.get_text()
-    return content   
-print(text_content(soup))         
+    for heading in headings:
+        section_title = heading.text.strip()  
+        content[section_title] = ""  
+        
+        
+        for sibling in heading.find_next_siblings():
+            if sibling.name in ["h1","h2","h3"]:
+                break  
+            
+            
+            if sibling.name =="img" and "src" in sibling.attrs:
+                content[section_title] += f"\nImage: {sibling['src']}"
+            
 
-
+            elif sibling.name in ["p","ul","ol","a"]:
+                content[section_title] += f"\n{sibling.get_text(strip=True)}"
+    
+    return content
+print(text_content(soup)) 
 
 
 
