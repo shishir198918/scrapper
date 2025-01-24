@@ -4,19 +4,19 @@ from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 url="https://en.wikipedia.org/wiki/Prakash_Shukla"
 url2="https://en.wikipedia.org/wiki/Web_scraping"
-
+url3="https://en.wikipedia.org/wiki/Market_research"
 
 def connection(url):
     """Return Stringfy HTML"""
     page=urlopen(url) #return response object
     html_bytes=page.read()
     html=html_bytes.decode("utf-8")
-    return html_bytes
+    return html
 
-
+content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i"])
 title_tags_only=SoupStrainer(["h1","h2","h3"]) # only parse title tags 
 title_soup=BS4(connection(url),"html.parser",parse_only=title_tags_only)
-soup=BS4(connection(url),"html.parser")
+soup=BS4(connection(url3),"html.parser",parse_only=content_tags_only)
 
 def list_of_content(title_soup):
     content=[]
@@ -59,11 +59,12 @@ def text_content(soup):
             
             
             if sibling.name =="img" and "src" in sibling.attrs:
-                content[section_title] += f"\nImage: {sibling['src']}"
+                content[section_title] = content[section_title]+ f"\nImage: {sibling['src']}"
             
 
             elif sibling.name in ["p","ul","ol","a"]:
-                content[section_title] += f"\n{sibling.get_text(strip=True)}"
+                
+                content[section_title] = content[section_title]+f"\n{sibling.get_text(strip=True)}"
     
     return content
 print(text_content(soup)) 

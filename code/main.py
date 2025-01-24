@@ -4,6 +4,8 @@ import scraper
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 title_tags_only=SoupStrainer(["h1","h2","h3"])
+content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i"])
+
 
 app=Flask(__name__)
 
@@ -18,6 +20,14 @@ def metadata():
     res={}
     res['metadata']=meta
     return make_response(jsonify(res),200)
+@app.route("/content/",methods=["GET"])
+def content():
+    url=urllib.parse.unquote(request.args.get("url"))
+    content_BS4=BS4(scraper.connection(url),"html.parser",parse_only=content_tags_only)
+    meta={}
+    meta["content"]=scraper.text_content(content_BS4)
+    return make_response(jsonify(meta),200)
+
 
 if __name__ =="__main__":
     app.run()

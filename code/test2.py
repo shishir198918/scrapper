@@ -35,9 +35,9 @@ def list_tag(parent_tag,child_tag):
             l2.append(title.text)
         obj[parent_tag]=l2
         return obj     
-
-
-print(len(BS4(string_html,"html.parser").body.contents))
+l2=BS4(stringfy_html,"html.parser").find_all(True)
+for tag in l2:
+    print(tag.name)
 
         
 
