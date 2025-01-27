@@ -2,9 +2,11 @@ from urllib.request import urlopen
 
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
+from pprint import pprint
+
 url="https://en.wikipedia.org/wiki/Prakash_Shukla"
-url2="https://en.wikipedia.org/wiki/Web_scraping"
-url3="https://en.wikipedia.org/wiki/Market_research"
+url2="https://en.wikipedia.org/wiki/Purulia_arms_drop_case"
+url3="https://en.wikipedia.org/wiki/Potato"
 
 def connection(url):
     """Return Stringfy HTML"""
@@ -54,20 +56,23 @@ def text_content(soup):
         
         
         for sibling in heading.find_next_siblings():
+            count=1
             if sibling.name in ["h1","h2","h3"]:
                 break  
             
             
             if sibling.name =="img" and "src" in sibling.attrs:
-                content[section_title] = content[section_title]+ f"\nImage: {sibling['src']}"
+                content[section_title] = content[section_title]+ f"\nImage{sibling.sourceline}:->{count} {sibling['src']}"
+                count=count+1
             
 
-            elif sibling.name in ["p","ul","ol","a"]:
-                
-                content[section_title] = content[section_title]+f"\n{sibling.get_text(strip=True)}"
+            #elif sibling.name in ["p","ul","ol","a"]:                
+                #content[section_title] = content[section_title]+f"\n{sibling.get_text(strip=True)}"
+            else:
+                pass    
     
     return content
-print(text_content(soup)) 
+pprint(text_content(soup)) 
 
 
 
