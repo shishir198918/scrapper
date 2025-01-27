@@ -18,6 +18,47 @@ Response:(JSON)
 }
 ```
 
+**errors**:
+
+**status**: `400 Bad request`
+```json
+{
+    "error": "Malformed URL,changes require"
+}
+```
+
+
+**status**: `404 Not Found`
+```json
+{
+    "error": "Server did not found any valid page."
+}
+```
+
+
+**status**: `403 Forbidden`
+```json
+{
+    "error": "Authorization required for Page"
+}
+```
+
+
+
+**status**: `413 Request Entity Too Large`
+```json
+{
+    "error": "URL is too long to proceed"
+}
+```
+
+**status**: `500 Internal Server Error`
+```json
+{
+    "error": "The server encountered an unexpected condition which prevented it from fulfilling the request"
+}
+```
+
 ##2-Get text content for webpage
 
 Endpoint: "GET /content?url=% %"
@@ -35,72 +76,52 @@ Response:(JSON)
 }
 }
 ```
-
-
 **errors**:
 
-```json
-{
-    "error": "Malformed syntax,changes require"
-}
-```
 **status**: `400 Bad request`
-
-
 ```json
 {
-    "error": "Server not found any HTML."
+    "error": "Malformed URL,changes require"
 }
 ```
+
+
 **status**: `404 Not Found`
-
-
 ```json
 {
-    "error": "Could not Scrap for URI"
+    "error": "Server did not found any valid page."
 }
 ```
+
+
 **status**: `403 Forbidden`
+```json
+{
+    "error": "Authorization required for Page"
+}
+```
 
 
+
+**status**: `413 Request Entity Too Large`
 ```json
 {
     "error": "URL is too long to proceed"
 }
 ```
-**status**: `413 Request Entity Too Large`
 
-
-```json
-{
-    "error": "Request-URI Too Long"
-}
-```
-**status**: `414 Request-URI Too Long`
-
-
+**status**: `500 Internal Server Error`
 ```json
 {
     "error": "The server encountered an unexpected condition which prevented it from fulfilling the request"
 }
 ```
-**status**: `500 Internal Server Error`
 
 
-```json
-{
-    "error": "Response only define for GET ."
-}
-```
-**status**: `501 Not Implemented`
 
 
-```json
-{
-    "error": "Only support HTTP/1.1 and HTTPS."
-}
-```
-**status**: `505 HTTP Version Not Supported`
+
+
 
 
 
