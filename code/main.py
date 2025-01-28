@@ -17,8 +17,8 @@ def metadata():
     meta={}
     meta["title"]=str(title_BS4.h1.text) 
     meta["content"]=scraper.list_of_content(title_BS4)
-    meta["DateOfPublication"]=scraper.dates(script)["datePublished"]
-    meta["DateOfModification"]=scraper.dates(script)["dateModified"]
+    meta["dateOfPublication"]=scraper.dates(script)["datePublished"]
+    meta["dateOfModification"]=scraper.dates(script)["dateModified"]
     res={}
     res['metadata']=meta
     return make_response(jsonify(res),200)
