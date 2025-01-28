@@ -91,7 +91,7 @@ def dates(tag):
     date["dateModified"]=date_dic["dateModified"]
     return date
 
-print(list_of_content(title_soup,script))
+
 
 
                 
