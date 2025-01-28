@@ -27,7 +27,7 @@ script=BS4(connection(url),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url),"html.parser",parse_only=title_tags_only)
 soup=BS4(connection(url3),"html.parser",parse_only=content_tags_only)
 
-def list_of_content(title_soup,script):
+def list_of_content(title_soup):
     content=[]
     obj={}
     for title in title_soup.find_all("h2"):        
@@ -47,7 +47,7 @@ def list_of_content(title_soup,script):
 
     content.append(obj)
 
-    content.append(dates(script))        
+         
                      
     return content 
 
