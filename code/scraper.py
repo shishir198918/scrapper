@@ -3,10 +3,13 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 from pprint import pprint
+import json 
 
 url="https://en.wikipedia.org/wiki/Prakash_Shukla"
 url2="https://en.wikipedia.org/wiki/Purulia_arms_drop_case"
 url3="https://en.wikipedia.org/wiki/Potato"
+
+
 
 def connection(url):
     """Return Stringfy HTML"""
@@ -17,10 +20,14 @@ def connection(url):
 
 content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i","th","td"])
 title_tags_only=SoupStrainer(["h1","h2","h3"]) # only parse title tags 
+header_tags=SoupStrainer(["head.meta['property']"])
+footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
+
+script=BS4(connection(url),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url),"html.parser",parse_only=title_tags_only)
 soup=BS4(connection(url3),"html.parser",parse_only=content_tags_only)
 
-def list_of_content(title_soup):
+def list_of_content(title_soup,script):
     content=[]
     obj={}
     for title in title_soup.find_all("h2"):        
@@ -37,7 +44,10 @@ def list_of_content(title_soup):
     
         else:
             content.append(title.text)
-    content.append(obj)        
+
+    content.append(obj)
+
+    content.append(dates(script))        
                      
     return content 
 
@@ -72,9 +82,16 @@ def text_content(soup):
                 pass    
     
     return content
-pprint(text_content(soup)) 
 
 
+def dates(tag):
+    date_dic=json.loads(tag.string)
+    date={}
+    date["datePublished"]=date_dic["datePublished"]
+    date["dateModified"]=date_dic["dateModified"]
+    return date
+
+print(list_of_content(title_soup,script))
 
 
                 

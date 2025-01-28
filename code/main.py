@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 title_tags_only=SoupStrainer(["h1","h2","h3"])
 content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i"])
-
+footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 app=Flask(__name__)
 
@@ -13,9 +13,10 @@ app=Flask(__name__)
 def metadata():
     url=urllib.parse.unquote(request.args.get("url"))
     title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
+    script=BS4(scraper.connection(url),"html.parser",parse_only=footer_tags)
     meta={}
     meta["title"]=str(title_BS4.h1.text) 
-    meta["content"]=scraper.list_of_content(title_BS4)
+    meta["content"]=scraper.list_of_content(title_BS4,script)
 
     res={}
     res['metadata']=meta
