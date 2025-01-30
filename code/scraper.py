@@ -18,6 +18,7 @@ def connection(url):
     html=html_bytes.decode("utf-8")
     return html
 
+
 content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i","th","td"])
 title_tags_only=SoupStrainer(["h1","h2","h3"]) # only parse title tags 
 header_tags=SoupStrainer(["head.meta['property']"])
@@ -45,15 +46,8 @@ def list_of_content(title_soup):
         else:
             content.append(title.text)
 
-    content.append(obj)
-
-         
-                     
+    content.append(obj)                              
     return content 
-
-
-  
-
 
 
 def text_content(soup):
@@ -90,8 +84,6 @@ def dates(tag):
     date["datePublished"]=date_dic["datePublished"]
     date["dateModified"]=date_dic["dateModified"]
     return date
-
-
 
 
                 
