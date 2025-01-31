@@ -18,15 +18,42 @@ def connection(url):
     html=html_bytes.decode("utf-8")
     return html
 
+m_filter=SoupStrainer(["main"])
 
-content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i","th","td"])
+content=BS4(connection(url),"html.parser",parse_only=m_filter)
+
+content_tags_only=SoupStrainer()
 title_tags_only=SoupStrainer(["h1","h2","h3"]) # only parse title tags 
 header_tags=SoupStrainer(["head.meta['property']"])
 footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url),"html.parser",parse_only=footer_tags)
-title_soup=BS4(connection(url),"html.parser",parse_only=title_tags_only)
+title_soup=BS4(connection(url3),"html.parser",parse_only=title_tags_only)
 soup=BS4(connection(url3),"html.parser",parse_only=content_tags_only)
+
+
+
+def list_tag(tag):
+    l=[]
+    for sub_tag in tag.find_all(True):
+        if sub_tag=='\n':
+            continue
+        if sub_tag.name in ["style","nav","button","noscript"]:
+            continue
+        if sub_tag.name in ["img","figure"]:
+            l.append(sub_tag.name)
+        elif sub_tag.string and sub_tag.name=="div":
+            continue    
+        elif sub_tag.string:
+            l.append(sub_tag.name)
+    return list(set(l))
+
+text_tag_list=SoupStrainer(list_tag(content.main))
+
+content_soup=BS4(connection(url),"html.parser",parse_only=text_tag_list)
+          
+
+
 
 def list_of_content(title_soup):
     content=[]
@@ -38,45 +65,16 @@ def list_of_content(title_soup):
                 if sub_title.name=="h3":
                     obj[title.text].append(sub_title.text)
                 elif sub_title.name=="h2":
-                    
+                    content.append({title.text:obj[title.text]})                  
                     break
                 else:
                     pass
     
         else:
             content.append(title.text)
-
-    content.append(obj)                              
+  
+                                  
     return content 
-
-
-def text_content(soup):
-    content = {}
-    headings = soup.find_all(["h1","h2","h3"])
-    
-    for heading in headings:
-        section_title = heading.text.strip()  
-        content[section_title] = ""  
-        
-        
-        for sibling in heading.find_next_siblings():
-            count=1
-            if sibling.name in ["h1","h2","h3"]:
-                break  
-            
-            
-            if sibling.name =="img" and "src" in sibling.attrs:
-                content[section_title] = content[section_title]+ f"\nImage{sibling.sourceline}:->{count} {sibling['src']}"
-                count=count+1
-            
-
-            #elif sibling.name in ["p","ul","ol","a"]:                
-                #content[section_title] = content[section_title]+f"\n{sibling.get_text(strip=True)}"
-            else:
-                pass    
-    
-    return content
-
 
 def dates(tag):
     date_dic=json.loads(tag.string)
@@ -85,8 +83,8 @@ def dates(tag):
     date["dateModified"]=date_dic["dateModified"]
     return date
 
-
-                
+     
+          
                 
 
 
