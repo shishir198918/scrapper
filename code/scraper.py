@@ -8,8 +8,9 @@ import json
 
 url1="http://css.maxdesign.com.au/selectutorial/tutorial_step2.htm"
 url2="https://en.wikipedia.org/wiki/Maria_Sharapova#Filmography"
-url3="https://en.wikipedia.org/wiki/Potato"
-
+url3="https://medium.com/@ahmadfarag/http-in-depth-dfdac806c2c0"
+url4="https://beautiful-soup-4.readthedocs.io/en/latest/"
+url5="https://en.wikipedia.org/wiki/Prakash_Shukla"
 
 def connection(url):
     """Return Stringfy HTML"""
@@ -22,8 +23,8 @@ title_tags_only=SoupStrainer(["h1","h2","h3","h4"]) # only parse title tags
 footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
-title_soup=BS4(connection(url3),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url3),"html.parser",parse_only=SoupStrainer(["main"]))
+title_soup=BS4(connection(url4),"html.parser",parse_only=title_tags_only)
+content=BS4(connection(url5),"html.parser",parse_only=SoupStrainer(["main"]))
 
 
 
@@ -61,7 +62,7 @@ def ancestors(tag):
 
 def tag_text_content(tag_name):
     obj={}
-    obj[tag_name.text]=[]
+    obj[tag_name.string]=[]
     count=1
     break_indicator=False
     
@@ -78,17 +79,17 @@ def tag_text_content(tag_name):
             if  hasattr(friend,"text") and friend.text:
                 
                 string="".join(friend.text)
-                obj[tag_name.text].append((string))
+                obj[tag_name.string].append((string))
         
 
             if friend.name=="img":
-                    obj[tag_name.text].append("".join(f"image->{count} {friend['src']}"))
+                    obj[tag_name.string].append("".join(f"image->{count} https{friend['src']}"))
                     count=count+1
             if friend.name=="figure":
-                    obj[tag_name.text].append("".join({friend.figcaption.text:friend.text}))
+                    obj[tag_name.string].append("".join({friend.figcaption.text:friend.text}))
                         
             if friend.name in ["h3","h4","h5"]:
-                    obj[tag_name.text].append({friend.text:tag_text_content(friend)})
+                    obj[tag_name.string].append({friend.text:tag_text_content(friend)})
             
   
             for child in friend.descendants:
@@ -100,16 +101,16 @@ def tag_text_content(tag_name):
                     continue
                
                 if child.name=="img":
-                    obj[tag_name.text].append((f"image->{count} {child['src']}"))
+                    obj[tag_name.string].append((f"image->{count} https{child['src']}"))
                     count=count+1
                 if child.name=="figure":
-                    obj[tag_name.text].append(({child.figcaption.text:child.text}))
+                    obj[tag_name.string].append(({child.figcaption.text:child.text}))
                 
                 if child.name=="table":
                     pass
 
                 if child.name in ["h3","h4","h5"]:
-                    obj[tag_name.text].append({child.text:tag_text_content(child)})
+                    obj[tag_name.string].append({child.text:tag_text_content(child)})
 
                 if child.name==tag_name.name:
                     break_indicator=True
@@ -128,7 +129,7 @@ def text_content(main_object):
         contents.append(tag_text_content(heading))
     return contents    
 
-#pprint(text_content(content.main))
+pprint(text_content(content.main))
 
 
 
