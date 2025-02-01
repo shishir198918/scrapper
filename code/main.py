@@ -4,7 +4,7 @@ import scraper
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 title_tags_only=SoupStrainer(["h1","h2","h3"])
-content_tags_only=SoupStrainer(["h1","h2","h3","img","p","ul","ol","a","span","b","cite","i"])
+content_tags_only=SoupStrainer(["main"])
 footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 app=Flask(__name__)
