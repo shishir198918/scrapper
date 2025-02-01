@@ -23,7 +23,7 @@ footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url3),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url1),"html.parser",parse_only=SoupStrainer(["main"]))
+content=BS4(connection(url3),"html.parser",parse_only=SoupStrainer(["main"]))
 
 
 

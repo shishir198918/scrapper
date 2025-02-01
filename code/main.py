@@ -28,7 +28,7 @@ def content():
     url=urllib.parse.unquote(request.args.get("url"))
     content_BS4=BS4(scraper.connection(url),"html.parser",parse_only=content_tags_only)
     meta={}
-    meta["content"]=scraper.text_content(content_BS4)
+    meta["content"]=scraper.text_content(content_BS4.main)
     return make_response(jsonify(meta),200)
 
 
