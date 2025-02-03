@@ -187,7 +187,8 @@ def text_content(main_object):
          contents.append(tag_text_content(heading))
     return contents    
 
-pprint(text_content(content.main))
+
+#pprint(text_content(content.main))
 
 
 
