@@ -159,20 +159,20 @@ def heading_text(main_object):
                         break
                                             
                     if  hasattr(child,"text")  and  not isinstance(child,NavigableString):
-                        for grandchild in child.contents:
+                        for grandchild in child.descendants:
 
                             if grandchild.name in ["h1","h2","h3","h4","h5","h6"]:
                                 break_indicator=True
                                 break
-                            if hasattr(grandchild,"string") and grandchild.string:
+                            if hasattr(grandchild,"string") and grandchild.name=="p":
                                 string=("".join(grandchild.text)).replace('\n',"")
                                 obj[title_headings.string].append((string))
 
-                        if grandchild.name=="img":
-                            obj[title_headings.string].append((f"image->{count} {grandchild['src']}"))
-                            count=count+1
-                        if grandchild.name=="figure":    
-                            obj[title_headings.string].append(({grandchild.figcaption.string:("".join(grandchild.text)).replace("\n","")}))
+                            if grandchild.name=="img":
+                                obj[title_headings.string].append((f"image->{count} {grandchild['src']}"))
+                                count=count+1
+                            if grandchild.name=="figure":    
+                                obj[title_headings.string].append(({grandchild.figcaption.string:("".join(grandchild.text)).replace("\n","")}))
 
         else:
             break            
@@ -184,11 +184,11 @@ def text_content(main_object):
     contents=[]
     contents.append(heading_text(main_object))
     for heading in main_object.find_all(["h2"]):           
-         contents.append(tag_text_content(heading))
+        contents.append(tag_text_content(heading))
     return contents    
 
 
-#pprint(text_content(content.main))
+pprint(text_content(content.main))
 
 
 
