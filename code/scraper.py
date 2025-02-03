@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as BS4,SoupStrainer
 from pprint import pprint
 import json 
 
-
+url="https://en.wikipedia.org/wiki/Feudalism"
 url1="http://css.maxdesign.com.au/selectutorial/tutorial_step2.htm"
 url2="https://en.wikipedia.org/wiki/Maria_Sharapova#Filmography"
 url3="https://medium.com/@ahmadfarag/http-in-depth-dfdac806c2c0"
@@ -25,7 +25,7 @@ footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url4),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url2),"html.parser",parse_only=SoupStrainer(["main"]))
+content=BS4(connection(url),"html.parser",parse_only=SoupStrainer(["main"]))
 
 
 
@@ -139,33 +139,36 @@ def heading_text(main_object):
     title_headings=main_object.find("h1")
     obj={}
     obj[title_headings.string]=[]
-    count=1
-    break_indicator=False
+    text_container=[]
     for friend in title_headings.parent.next_siblings:
-        if not break_indicator:
+        if friend.name=="p":
+            text_container.append(friend.text)
+    obj[title_headings.string].append(("".join(text_container)))        
+            
 
-            if not friend.name:
-                continue
 
-            if friend.name in ["header","script","nav","noscript","style"]:
-                continue
+        # if not break_indicator:
+
+        #     if not friend.name:
+        #         continue
+
+        #     if friend.name in ["header","script","nav","noscript","style"]:
+        #         continue
                 
-            if  hasattr(friend,"text") and friend.text:
+        #     if  hasattr(friend,"text") and friend.text:
 
-                string=("".join(friend.text)).replace('\n',"")
-                obj[title_headings.string].append((string))
+        #         string=("".join(friend.text)).replace('\n',"")
+        #         obj[title_headings.string].append((string))
 
-            for child in friend.descendants:
-                if child.name in ["h2","h3","h4","h5","h6"]:
-                    break_indicator=True
-                    break
-                if child.name=="img":
-                    obj[title_headings.string].append((f"image->{count} {child['src']}"))
-                    count=count+1
-                if friend.name=="figure":
-                    obj[title_headings.string].append(({friend.figcaption.text:friend.text}))
-        else:
-            break
+            # for child in friend.descendants:
+            #     if child.name in ["h2","h3","h4","h5","h6"]:
+            #         break_indicator=True
+            #         break
+            #     if child.name=="img":
+            #         obj[title_headings.string].append((f"image->{count} {child['src']}"))
+            #         count=count+1
+            #     if friend.name=="figure":
+            #         obj[title_headings.string].append(({friend.figcaption.text:friend.text}))
     return obj            
 
      
