@@ -114,10 +114,10 @@ def tag_text_content(tag_name):
                     continue
                
                 if child.name=="img":
-                    obj[tag_name.string].append((f"image->{count} {child['src']}"))
+                    obj[tag_name.string].append("".join(f"image->{count} {child['src']}"))
                     count=count+1
                 if child.name=="figure":
-                    obj[tag_name.string].append(({child.figcaption.text:child.text}))
+                    obj[tag_name.string].append("".join({child.figcaption.text:child.text}))
                 
                 if child.name=="table":
                     pass
@@ -139,36 +139,29 @@ def heading_text(main_object):
     title_headings=main_object.find("h1")
     obj={}
     obj[title_headings.string]=[]
-    text_container=[]
-    for friend in title_headings.parent.next_siblings:
-        if friend.name=="p":
-            text_container.append(friend.text)
-    obj[title_headings.string].append(("".join(text_container)))        
-            
+    count=1
+    break_indicator=False
+    for friend in title_headings.parent.next_siblings:                   
+        if not break_indicator:
+            if not friend.name:
+                continue
 
-
-        # if not break_indicator:
-
-        #     if not friend.name:
-        #         continue
-
-        #     if friend.name in ["header","script","nav","noscript","style"]:
-        #         continue
+            if friend.name in ["header","script","nav","noscript","style"]:
+                continue
                 
-        #     if  hasattr(friend,"text") and friend.text:
+            if  hasattr(friend,"text") and friend.name=="p":
+                string=("".join(friend.text)).replace('\n',"")
+                obj[title_headings.string].append((string))
 
-        #         string=("".join(friend.text)).replace('\n',"")
-        #         obj[title_headings.string].append((string))
-
-            # for child in friend.descendants:
-            #     if child.name in ["h2","h3","h4","h5","h6"]:
-            #         break_indicator=True
-            #         break
-            #     if child.name=="img":
-            #         obj[title_headings.string].append((f"image->{count} {child['src']}"))
-            #         count=count+1
-            #     if friend.name=="figure":
-            #         obj[title_headings.string].append(({friend.figcaption.text:friend.text}))
+            for child in friend.descendants:
+                if child.name in ["h2","h3","h4","h5","h6"]:
+                    break_indicator=True
+                    break
+                if child.name=="img":
+                    obj[title_headings.string].append((f"image->{count} {child['src']}"))
+                    count=count+1
+                if friend.name=="figure":
+                    obj[title_headings.string].append(({friend.figcaption.text:friend.text}))
     return obj            
 
      
@@ -180,7 +173,7 @@ def text_content(main_object):
         contents.append(tag_text_content(heading))
     return contents    
 
-#pprint(text_content(content.main))
+pprint(text_content(content.main))
 
 
 
