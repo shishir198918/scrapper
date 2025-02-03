@@ -16,7 +16,7 @@ def metadata():
     script=BS4(scraper.connection(url),"html.parser",parse_only=footer_tags)
     meta={}
     meta["title"]=str(title_BS4.h1.text) 
-    meta["content"]=scraper.list_of_content(title_BS4)
+    meta["content"]=scraper.list_of_headings(title_BS4)
     meta["dateOfPublication"]=scraper.dates(script)["datePublished"]
     meta["dateOfModification"]=scraper.dates(script)["dateModified"]
     res={}
