@@ -11,6 +11,7 @@ url2="https://en.wikipedia.org/wiki/Maria_Sharapova#Filmography"
 url3="https://medium.com/@ahmadfarag/http-in-depth-dfdac806c2c0"
 url4="https://beautiful-soup-4.readthedocs.io/en/latest/"
 url5="https://en.wikipedia.org/wiki/Prakash_Shukla"
+url6="https://en.wikipedia.org/wiki/Sachin_Tendulkar"
 
 def connection(url):
     """Return Stringfy HTML"""
@@ -24,7 +25,7 @@ footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url4),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url5),"html.parser",parse_only=SoupStrainer(["main"]))
+content=BS4(connection(url2),"html.parser",parse_only=SoupStrainer(["main"]))
 
 
 
@@ -56,6 +57,17 @@ def dates(tag):
     date["dateModified"]=date_dic["dateModified"]
     return date
 
+def clean_text(tag):
+    string=""
+    for child in tag.descendants:
+        if child.string:
+            if child.name in ["sup"]:
+                continue
+            else:
+                string=string+child.string
+    return string            
+
+
 def ancestors(tag):
     return tag.parent.parent
 
@@ -79,6 +91,7 @@ def tag_text_content(tag_name):
             if  hasattr(friend,"text") and friend.text:
                 
                 string="".join(friend.text)
+                #string=clean_text(friend)
                 obj[tag_name.string].append((string))
         
 
@@ -88,8 +101,8 @@ def tag_text_content(tag_name):
             if friend.name=="figure":
                     obj[tag_name.string].append("".join({friend.figcaption.text:friend.text}))
                         
-            if friend.name in ["h3","h4","h5"]:
-                    obj[tag_name.string].append({friend.text:tag_text_content(friend)})
+            #if friend.name in ["h3","h4","h5"]:
+                    #obj[tag_name.string].append({friend.text:tag_text_content(friend)})
             
   
             for child in friend.descendants:
