@@ -25,7 +25,7 @@ footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url4),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url5),"html.parser",parse_only=SoupStrainer(["main"]))
+content=BS4(connection(url),"html.parser",parse_only=SoupStrainer(["main"]))
 
 
 
@@ -188,7 +188,7 @@ def text_content(main_object):
     return contents    
 
 
-pprint(text_content(content.main))
+#pprint(text_content(content.main))
 
 
 
