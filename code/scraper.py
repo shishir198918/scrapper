@@ -160,7 +160,7 @@ def heading_text(main_object):
                                             
                     if  hasattr(child,"text")  and  not isinstance(child,NavigableString):
                         for grandchild in child.contents:
-                            
+
                             if grandchild.name in ["h1","h2","h3","h4","h5","h6"]:
                                 break_indicator=True
                                 break
@@ -183,8 +183,8 @@ def heading_text(main_object):
 def text_content(main_object):
     contents=[]
     contents.append(heading_text(main_object))
-    # for heading in main_object.find_all(["h2"]):           
-    #     contents.append(tag_text_content(heading))
+    for heading in main_object.find_all(["h2"]):           
+         contents.append(tag_text_content(heading))
     return contents    
 
 pprint(text_content(content.main))
