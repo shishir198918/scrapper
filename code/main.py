@@ -31,6 +31,18 @@ def content():
     meta["content"]=scraper.text_content(content_BS4.main)
     return make_response(jsonify(meta),200)
 
+@app.route("/sitemap/medium")
+def extract_link():
+    file=open("../data/sitemap.xml","r")
+    xml_content=file.read()
+    file.close()
+    xml_raw=BS4(xml_content,"xml")
+    list_url=[]
+    # for loc in (xml_raw.find_all("loc")):
+    #     list_url.append(loc.string)
+    for loc in (xml_raw.find_all("loc")):
+         list_url.append(loc.text)
+    return make_response(jsonify(list_url))
 
 if __name__ =="__main__":
     app.run()

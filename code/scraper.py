@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 
-from bs4 import BeautifulSoup as BS4,SoupStrainer
+from bs4 import BeautifulSoup as BS4,SoupStrainer,NavigableString
 
 from pprint import pprint
 import json 
@@ -25,7 +25,7 @@ footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url4),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url),"html.parser",parse_only=SoupStrainer(["main"]))
+content=BS4(connection(url5),"html.parser",parse_only=SoupStrainer(["main"]))
 
 
 
@@ -61,8 +61,8 @@ def clean_text(tag):
     string=""
     for child in tag.descendants:
         if child.string:
-            if child.name in ["sup"]:
-                continue
+            if child.name in ["h1","h2","h3","h4","h5"]:
+                break
             else:
                 string=string+child.string
     return string            
@@ -86,20 +86,20 @@ def tag_text_content(tag_name):
             #print(friend.name)
 
             if friend.name in ["header","script","nav","noscript","style"]:
-                    continue
+                continue
             
-            if  hasattr(friend,"text") and friend.text:
+            if  hasattr(friend,"text"):
                 
                 string="".join(friend.text)
                 #string=clean_text(friend)
-                obj[tag_name.string].append((string))
+                obj[tag_name.string].append(string.replace('\n'," "))
         
 
             if friend.name=="img":
                     obj[tag_name.string].append("".join(f"image->{count} {friend['src']}"))
                     count=count+1
             if friend.name=="figure":
-                    obj[tag_name.string].append("".join({friend.figcaption.text:friend.text}))
+                    obj[tag_name.string].append(({friend.figcaption.text:("".join(friend.text)).replace('\n'," ")}))
                         
             #if friend.name in ["h3","h4","h5"]:
                     #obj[tag_name.string].append({friend.text:tag_text_content(friend)})
@@ -117,7 +117,7 @@ def tag_text_content(tag_name):
                     obj[tag_name.string].append("".join(f"image->{count} {child['src']}"))
                     count=count+1
                 if child.name=="figure":
-                    obj[tag_name.string].append("".join({child.figcaption.text:child.text}))
+                    obj[tag_name.string].append(({child.figcaption.string:("".join(child.text)).replace("\n"," ")}))
                 
                 if child.name=="table":
                     pass
@@ -145,23 +145,37 @@ def heading_text(main_object):
         if not break_indicator:
             if not friend.name:
                 continue
-
             if friend.name in ["header","script","nav","noscript","style"]:
                 continue
-                
-            if  hasattr(friend,"text") and friend.name=="p":
-                string=("".join(friend.text)).replace('\n',"")
-                obj[title_headings.string].append((string))
+            
+            
+            if hasattr(friend,"text"):                
+                for child in friend.contents:
+                    if child.name in ["header","script","nav","noscript","style"]:                
+                        continue
+                        
+                    if break_indicator:
 
-            for child in friend.descendants:
-                if child.name in ["h2","h3","h4","h5","h6"]:
-                    break_indicator=True
-                    break
-                if child.name=="img":
-                    obj[title_headings.string].append((f"image->{count} {child['src']}"))
-                    count=count+1
-                if friend.name=="figure":
-                    obj[title_headings.string].append(({friend.figcaption.text:friend.text}))
+                        break
+                                            
+                    if  hasattr(child,"text")  and  not isinstance(child,NavigableString):
+                        for grandchild in child.contents:
+                            
+                            if grandchild.name in ["h1","h2","h3","h4","h5","h6"]:
+                                break_indicator=True
+                                break
+                            if hasattr(grandchild,"string") and grandchild.string:
+                                string=("".join(grandchild.text)).replace('\n',"")
+                                obj[title_headings.string].append((string))
+
+                        if grandchild.name=="img":
+                            obj[title_headings.string].append((f"image->{count} {grandchild['src']}"))
+                            count=count+1
+                        if grandchild.name=="figure":    
+                            obj[title_headings.string].append(({grandchild.figcaption.string:("".join(grandchild.text)).replace("\n","")}))
+
+        else:
+            break            
     return obj            
 
      
@@ -169,8 +183,8 @@ def heading_text(main_object):
 def text_content(main_object):
     contents=[]
     contents.append(heading_text(main_object))
-    for heading in main_object.find_all(["h2"]):           
-        contents.append(tag_text_content(heading))
+    # for heading in main_object.find_all(["h2"]):           
+    #     contents.append(tag_text_content(heading))
     return contents    
 
 pprint(text_content(content.main))
