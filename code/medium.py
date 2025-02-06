@@ -77,8 +77,8 @@ def head_content_tag(head):
     for tag in head.parent.next_siblings:        
         if head.name==tag.name:
             break
-        if hasattr(tag,"string"):
-            contents[head.string].append(tag.text)
+        if hasattr(tag,"string") and tag.string:
+            contents[head.string].append(("".join(tag.text)).replace('\n'," "))
         if tag.name=="img":
             contents[head.string].append(f"Image-->{tag['src']}")
         if tag.name in ["h2","h3","h4"]:
@@ -95,8 +95,8 @@ def text_content_tag(head):
             for sub_tag in tag.descendants:
                 if head.name==tag.name:
                     break
-                if hasattr(sub_tag,"string"):
-                    contents[head.string].append(sub_tag.text)
+                if hasattr(sub_tag,"string") and sub_tag.string:
+                    contents[head.string].append(("".join(sub_tag.text)).replace("\n"," "))
                 # if sub_tag.name=="img":
                 #     contents[head.string].append(f"Image-->{sub_tag['src']}")
                 if tag.name in ["h2","h3","h4"]:

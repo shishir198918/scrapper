@@ -72,6 +72,7 @@ def content():
         meta["content"]=scraper.text_content(content_BS4.main)
         return make_response(jsonify(meta),200)
 
+
 @app.route("/sitemap",methods=["GET"])
 def extract_link():
     url=urllib.parse.unquote(request.args.get("url"))
