@@ -49,7 +49,21 @@ def list_of_headings(html_object):
                 if value in ['article:published_time','article:modified_time']:
                     meta_obj[value]=tag['content']
     meta_obj.update(heading_list(html_object))
-    return meta_obj                
+    return meta_obj  
+
+
+
+def content(html_object):
+    contents={}
+    head=html_object.find("h1")
+    contents[head.string]
+    for tag in head.parent.next_siblings:
+        for sub_tag in tag.descendants:
+            if hasattr(sub_tag,"text"):
+                contents
+
+        
+
 
 #print(list_of_headings(content))        
         

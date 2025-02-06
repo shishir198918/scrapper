@@ -58,7 +58,7 @@ def extract_link():
         xml_raw=BS4(connection_xml(url),"xml")        
         for loc in (xml_raw.find_all("loc")):
             list_url.append(loc.text)
-        return make_response(jsonify(list_url))
+        return make_response(jsonify(list_url),200)
     
 
 
