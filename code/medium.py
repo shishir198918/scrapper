@@ -61,8 +61,10 @@ def list_of_headings(html_object):
                     meta_obj[value]=tag['content']
         if hasattr(tag,"property"):
             for value in tag.get_attribute_list('property'):
-                if value in ['article:published_time','article:modified_time','article:author','og:type','og:description','og:url']:
+                if value in ['article:published_time','article:modified_time']:
                     meta_obj[value]=tag['content']
+                elif value in ['og:type','og:description','og:url']:
+                    meta_obj[value[3:]]=tag['content']    
     meta_obj.update(heading_list(html_object))
     return meta_obj  
 

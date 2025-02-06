@@ -3,6 +3,7 @@ import urllib.parse
 from urllib.request import urlopen,Request
 import scraper
 import medium
+import json 
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 title_tags_only=SoupStrainer(["h1","h2","h3"])
@@ -28,20 +29,24 @@ def connection_xml(url):
 
 @app.route("/metadata/", methods=["GET"])
 def metadata():
+    res={}
     url=urllib.parse.unquote(request.args.get("url"))
     
     if url[7:14]=="/medium":
         parsed_html=BS4(connection_xml(url),"html.parser")
+        res['crawler_data']=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
 
-        return make_response(jsonify(medium.list_of_headings(parsed_html)),200)
+        res["metadata"]=(medium.list_of_headings(parsed_html))
+        return make_response(jsonify(res),200)
     title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
-    script=BS4(scraper.connection(url),"html.parser",parse_only=footer_tags)
+    #s=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
     meta={}
     meta["title"]=str(title_BS4.h1.text) 
     meta["content"]=scraper.list_of_headings(title_BS4)
-    meta["dateOfPublication"]=scraper.dates(script)["datePublished"]
-    meta["dateOfModification"]=scraper.dates(script)["dateModified"]
-    res={}
+    meta['Crawler_data']=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
+    # meta["dateOfPublication"]=scraper.dates(script)["datePublished"]
+    # meta["dateOfModification"]=scraper.dates(script)["dateModified"]
+    
     res['metadata']=meta
     return make_response(jsonify(res),200)
 

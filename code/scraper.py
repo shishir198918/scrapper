@@ -52,7 +52,7 @@ def list_of_headings(title_soup):
 
 
 
-
+'''comment--> not in use '''
 def dates(tag):
     date_dic=json.loads(tag.string)
     date={}
