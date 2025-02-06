@@ -1,6 +1,8 @@
 from flask import Flask,request,make_response,jsonify
 import urllib.parse
+from urllib.request import urlopen,Request
 import scraper
+import medium
 from bs4 import BeautifulSoup as BS4,SoupStrainer
 
 title_tags_only=SoupStrainer(["h1","h2","h3"])
@@ -9,9 +11,26 @@ footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 app=Flask(__name__)
 
+
+def connection_xml(url):
+    """Return Stringfy HTML"""
+    header={
+            "User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Content-Type": "application/xml"
+            }
+
+    req=Request(url,headers=header,method="GET")
+    page=urlopen(req) #return response object
+    html_bytes=page.read()
+    html=html_bytes.decode("utf-8")
+    return html
+
 @app.route("/metadata/", methods=["GET"])
 def metadata():
     url=urllib.parse.unquote(request.args.get("url"))
+    if url[7:14]=="medium":
+        return make_response(jsonify(medium.list_of_headings(connection_xml(url),"html.parser")))
     title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
     script=BS4(scraper.connection(url),"html.parser",parse_only=footer_tags)
     meta={}
@@ -31,18 +50,17 @@ def content():
     meta["content"]=scraper.text_content(content_BS4.main)
     return make_response(jsonify(meta),200)
 
-@app.route("/sitemap/medium")
+@app.route("/sitemap")
 def extract_link():
-    file=open("../data/sitemap.xml","r")
-    xml_content=file.read()
-    file.close()
-    xml_raw=BS4(xml_content,"xml")
+    url=urllib.parse.unquote(request.args.get("url"))
     list_url=[]
-    # for loc in (xml_raw.find_all("loc")):
-    #     list_url.append(loc.string)
-    for loc in (xml_raw.find_all("loc")):
-         list_url.append(loc.text)
-    return make_response(jsonify(list_url))
+    if url[-3::1]=="xml":        
+        xml_raw=BS4(connection_xml(url),"xml")        
+        for loc in (xml_raw.find_all("loc")):
+            list_url.append(loc.text)
+        return make_response(jsonify(list_url))
+    
+
 
 if __name__ =="__main__":
     app.run()

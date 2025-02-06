@@ -1,4 +1,4 @@
-from urllib.request import urlopen
+from urllib.request import urlopen,Request
 
 from bs4 import BeautifulSoup as BS4,SoupStrainer,NavigableString
 
@@ -12,20 +12,23 @@ url3="https://medium.com/@ahmadfarag/http-in-depth-dfdac806c2c0"
 url4="https://beautiful-soup-4.readthedocs.io/en/latest/"
 url5="https://en.wikipedia.org/wiki/Prakash_Shukla"
 url6="https://en.wikipedia.org/wiki/Sachin_Tendulkar"
-
+url_med="https://medium.com/myp-magazine-16/wunderland-mia-im-interview-c4f0df0ba603"
+url_med2="https://medium.com/@spaw.co/beautifulsoup-user-agents-in-python-73f1ce49deb1"
 def connection(url):
     """Return Stringfy HTML"""
-    page=urlopen(url) #return response object
+    req=Request(url,headers={"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0"},method="GET")
+    page=urlopen(req) #return response object
     html_bytes=page.read()
     html=html_bytes.decode("utf-8")
     return html
+     
 
 title_tags_only=SoupStrainer(["h1","h2","h3","h4"]) # only parse title tags 
 footer_tags=SoupStrainer("script",attrs={"type":"application/ld+json"})
 
 script=BS4(connection(url1),"html.parser",parse_only=footer_tags)
 title_soup=BS4(connection(url4),"html.parser",parse_only=title_tags_only)
-content=BS4(connection(url),"html.parser",parse_only=SoupStrainer(["main"]))
+content=BS4(connection(url_med2),"html.parser",parse_only=SoupStrainer(["body","main"]))
 
 
 
@@ -183,12 +186,12 @@ def heading_text(main_object):
 def text_content(main_object):
     contents=[]
     contents.append(heading_text(main_object))
-    for heading in main_object.find_all(["h2"]):           
+    for heading in main_object.find_all(["h1"]):           
         contents.append(tag_text_content(heading))
     return contents    
 
 
-#pprint(text_content(content.main))
+#pprint(text_content(content.body))
 
 
 
