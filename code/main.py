@@ -53,6 +53,7 @@ def content():
 @app.route("/sitemap",methods=["GET"])
 def extract_link():
     url=urllib.parse.unquote(request.args.get("url"))
+    
     list_url=[]
     if url[-3::1]=="xml":        
         xml_raw=BS4(connection_xml(url),"xml")        
