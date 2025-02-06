@@ -52,11 +52,23 @@ def metadata():
 
 @app.route("/content/",methods=["GET"])
 def content():
-    url=urllib.parse.unquote(request.args.get("url"))
-    content_BS4=BS4(scraper.connection(url),"html.parser",parse_only=content_tags_only)
     meta={}
-    meta["content"]=scraper.text_content(content_BS4.main)
-    return make_response(jsonify(meta),200)
+    meta['content']={}
+    url=urllib.parse.unquote(request.args.get("url"))
+    
+    if url[7:14]=="/medium":
+        parsed_html=BS4(connection_xml(url),"html.parser")
+        meta["content"].update(medium.head_content_tag(parsed_html.find("h1")))
+        for tag in list(parsed_html.find_all("h1"))[1:]:
+            meta['content'].update(medium.text_content_tag(tag))
+        return make_response(jsonify(meta),200) 
+
+    else:
+
+        content_BS4=BS4(scraper.connection(url),"html.parser",parse_only=content_tags_only)
+        
+        meta["content"]=scraper.text_content(content_BS4.main)
+        return make_response(jsonify(meta),200)
 
 @app.route("/sitemap",methods=["GET"])
 def extract_link():

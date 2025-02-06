@@ -107,8 +107,8 @@ Response:(JSON)
  "title":"title of Webpage",
  "Content 1":"Text in content",
  "Content 2":"Text in content 2"
-
-}
+ }
+ 
 }
 ```
 **errors**:

@@ -70,15 +70,49 @@ def list_of_headings(html_object):
 
 
 
-def text_content(html_object):
+def head_content_tag(head):
     contents={}
-    head=html_object.find("h1")
-    contents[head.string]
-    for tag in head.parent.next_siblings:
-        for sub_tag in tag.descendants:
-            if hasattr(sub_tag,"text"):
+    string=""
+    contents[head.string]=[]
+    for tag in head.parent.next_siblings:        
+        if head.name==tag.name:
+            break
+        if hasattr(tag,"string"):
+            contents[head.string].append(tag.text)
+        if tag.name=="img":
+            contents[head.string].append(f"Image-->{tag['src']}")
+        if tag.name in ["h2","h3","h4"]:
+            contents[head.string].append(head_content_tag(tag))
+    return contents  
+
+
+def text_content_tag(head):
+    contents={}
+
+    contents[head.string]=[]
+    for tag in head.next_siblings:
+        if hasattr(tag,"text") and tag.text:
+            for sub_tag in tag.descendants:
+                if head.name==tag.name:
+                    break
+                if hasattr(sub_tag,"string"):
+                    contents[head.string].append(sub_tag.text)
+                # if sub_tag.name=="img":
+                #     contents[head.string].append(f"Image-->{sub_tag['src']}")
+                if tag.name in ["h2","h3","h4"]:
+                    contents[head.string].append(text_content_tag(sub_tag))
+    return contents  
+
+
+
+#pprint(text_content_tag(parsed_html.h1))
+
+
+
+    
+
             
-                pass
+
 
         
 
