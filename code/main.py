@@ -29,8 +29,11 @@ def connection_xml(url):
 @app.route("/metadata/", methods=["GET"])
 def metadata():
     url=urllib.parse.unquote(request.args.get("url"))
-    if url[7:14]=="medium":
-        return make_response(jsonify(medium.list_of_headings(connection_xml(url),"html.parser")))
+    
+    if url[7:14]=="/medium":
+        parsed_html=BS4(connection_xml(url),"html.parser")
+
+        return make_response(jsonify(medium.list_of_headings(parsed_html)),200)
     title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
     script=BS4(scraper.connection(url),"html.parser",parse_only=footer_tags)
     meta={}
@@ -53,7 +56,7 @@ def content():
 @app.route("/sitemap",methods=["GET"])
 def extract_link():
     url=urllib.parse.unquote(request.args.get("url"))
-    
+
     list_url=[]
     if url[-3::1]=="xml":        
         xml_raw=BS4(connection_xml(url),"xml")        

@@ -15,7 +15,22 @@ def connection(url):
     return html
 url="https://medium.com/@spaw.co/beautifulsoup-user-agents-in-python-73f1ce49deb1"
 
-content=BS4(connection(url),"html.parser")
+
+def connection_xml(url):
+    """Return Stringfy HTML"""
+    header={
+            "User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Content-Type": "application/xml"
+            }
+
+    req=Request(url,headers=header,method="GET")
+    page=urlopen(req) #return response object
+    html_bytes=page.read()
+    html=html_bytes.decode("utf-8")
+    return html
+
+parsed_html=BS4(connection_xml(url),"html.parser")
 
 def nested_tag(tag):
     heading_obj=[]
@@ -38,7 +53,7 @@ def heading_list(html_object):
 
 def list_of_headings(html_object):
     meta_obj={}
-    for tag in html_object.html.find_all("meta"):
+    for tag in html_object.find_all("meta"):
         '''for name attribute'''
         if hasattr(tag,"name"):
             for value in tag.get_attribute_list('name'):                
@@ -53,18 +68,19 @@ def list_of_headings(html_object):
 
 
 
-def content(html_object):
+def text_content(html_object):
     contents={}
     head=html_object.find("h1")
     contents[head.string]
     for tag in head.parent.next_siblings:
         for sub_tag in tag.descendants:
             if hasattr(sub_tag,"text"):
-                contents
+            
+                pass
 
         
 
 
-#print(list_of_headings(content))        
+#print(list_of_headings(parsed_html))        
         
 
