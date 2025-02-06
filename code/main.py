@@ -50,7 +50,7 @@ def content():
     meta["content"]=scraper.text_content(content_BS4.main)
     return make_response(jsonify(meta),200)
 
-@app.route("/sitemap")
+@app.route("/sitemap",methods=["GET"])
 def extract_link():
     url=urllib.parse.unquote(request.args.get("url"))
     list_url=[]
@@ -58,7 +58,7 @@ def extract_link():
         xml_raw=BS4(connection_xml(url),"xml")        
         for loc in (xml_raw.find_all("loc")):
             list_url.append(loc.text)
-        return make_response(jsonify(list_url),200)
+        return make_response(jsonify(list_url))
     
 
 
