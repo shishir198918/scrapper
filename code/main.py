@@ -30,25 +30,27 @@ def connection_xml(url):
 @app.route("/metadata/", methods=["GET"])
 def metadata():
     res={}
+    meta={}
     url=urllib.parse.unquote(request.args.get("url"))
     
     if url[7:14]=="/medium":
         parsed_html=BS4(connection_xml(url),"html.parser")
         res['crawler_data']=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
-
-        res["metadata"]=(medium.list_of_headings(parsed_html))
+        res["content"]=(medium.list_of_headings(parsed_html))
+        meta["metadata"]=res
+        return make_response(jsonify(meta),200)
+    else:
+        title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
+        #s=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
+        
+        meta["title"]=str(title_BS4.h1.text) 
+        meta["content"]=scraper.list_of_headings(title_BS4)
+        meta['Crawler_data']=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
+        # meta["dateOfPublication"]=scraper.dates(script)["datePublished"]
+        # meta["dateOfModification"]=scraper.dates(script)["dateModified"]
+        
+        res['metadata']=meta
         return make_response(jsonify(res),200)
-    title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
-    #s=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
-    meta={}
-    meta["title"]=str(title_BS4.h1.text) 
-    meta["content"]=scraper.list_of_headings(title_BS4)
-    meta['Crawler_data']=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
-    # meta["dateOfPublication"]=scraper.dates(script)["datePublished"]
-    # meta["dateOfModification"]=scraper.dates(script)["dateModified"]
-    
-    res['metadata']=meta
-    return make_response(jsonify(res),200)
 
 @app.route("/content/",methods=["GET"])
 def content():
