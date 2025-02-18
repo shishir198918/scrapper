@@ -38,7 +38,7 @@ def metadata():
         res['crawler_data']=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
         res["list of content"]=(medium.list_of_headings(parsed_html))
         meta["metadata"]=res
-        return make_response(jsonify(meta),200)
+        return make_response(jsonify(meta)),200
     else:
         title_BS4=BS4(scraper.connection(url),"html.parser",parse_only=title_tags_only)
         #s=json.loads(BS4(connection_xml(url),"html.parser",parse_only=footer_tags).script.string)
@@ -50,7 +50,7 @@ def metadata():
         # meta["dateOfModification"]=scraper.dates(script)["dateModified"]
         
         res['metadata']=meta
-        return make_response(jsonify(res),200)
+        return make_response(jsonify(res)),200
 
 @app.route("/content/",methods=["GET"])
 def content():
